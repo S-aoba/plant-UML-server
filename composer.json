@@ -1,4 +1,9 @@
 {
+    "autoload": {
+        "psr-4": {
+            "Models\\": "Models/"
+        }
+    },
     "require": {
         "jawira/plantuml-encoding": "^1.1"
     }
