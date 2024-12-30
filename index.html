@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja" class="h-screen">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plant UML Editor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.40.0/min/vs/loader.js"></script>
+  <script>
+    let editor;
+    // monaco editorの初期化
+    require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.40.0/min/vs' } });
+    require(['vs/editor/editor.main'], function() {
+      // エディターを初期化
+      editor = monaco.editor.create(document.getElementById('editor'), {
+        value: '',
+        language: 'markdown',
+        theme: 'vs-dark',
+        automaticLayout: true
+      });
+    })
+
+    // JavaScriptの関数
+    async function generateUMLImage() {
+      try {
+        const uml = editor.getValue();
+
+        const response = await fetch('api.php', {
+          method: 'POST',
+          body: uml
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // レスポンスをテキストとして取得
+        const data = await response.json();
+        
+        // 結果を画面に表示
+        const preview = document.getElementById('preview');
+        if(preview.querySelector('img') !== null) {
+          img.src = data.url;
+          return;
+        }
+
+        const img = document.createElement('img');
+        img.src = data.url;
+        img.alt = 'UML-Image'
+        img.className = 'w-full h-full'
+        
+
+        preview.appendChild(img);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+  </script>
+</head>
+<body class="w-full h-screen flex flex-col">
+  <div class="w-full h-fit text-center py-8 border-b border-slate-300">
+    <h1 class="text-4xl font-medium font-sans">Plant UML Editor</h1>
+  </div>
+  <div method="post" action="" class="py-8  pl-[600px]">
+    <button id="generate" onclick={generateUMLImage()} type="button" class="px-3 py-2 border border-slate-400 bg-gray-100/70 rounded-lg text-slate-700 hover:bg-gray-200 transition-colors duration-300 text-base font-medium">Generate</button>
+  </div>
+  <div class="w-full flex-1 flex">
+    <div id="editor" class="h-full max-w-xl w-[600px]"></div>
+    <div id="preview" class="h-full flex-1 border-t border-t-slate-300"></div>
+  </div>
+</body>
+</html>
