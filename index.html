@@ -54,10 +54,8 @@
           img.src = data.url;
           img.alt = "UML-Image";
           img.id = "UML-Image"
-          // TODO: UML Imageの大きさをどうするか
-          
 
-          img.className = "w-full h-full";
+          img.className = "max-w-full h-auto object-contain";
 
           preview.appendChild(img);
         } catch (error) {
@@ -82,7 +80,7 @@
     </div>
     <div class="w-full flex-1 flex">
       <div id="editor" class="h-full max-w-xl w-[600px]"></div>
-      <div id="preview" class="h-full flex-1 border-t border-t-slate-300"></div>
+      <div id="preview" class="h-full flex-1 grid justify-center border-t border-t-slate-300"></div>
     </div>
   </body>
 </html>
